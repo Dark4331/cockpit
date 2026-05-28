@@ -73,6 +73,20 @@ class CockpitClientWindow(Gtk.ApplicationWindow):
         ])
         self.lookup_action('run-js').set_enabled(app.enable_run_js)
 
+        shortcut_controller = Gtk.ShortcutController()
+        shortcut_controller.set_propagation_phase(Gtk.PropagationPhase.BUBBLE)
+        
+        shortcut_controller.add_shortcut(Gtk.Shortcut.new(
+            Gtk.ShortcutTrigger.parse_string("<Primary>r"),
+            Gtk.NamedAction.new("win.reload")
+        ))
+        shortcut_controller.add_shortcut(Gtk.Shortcut.new(
+            Gtk.ShortcutTrigger.parse_string("<Primary><Shift>r"),
+            Gtk.NamedAction.new("win.reload-bypass-cache")
+        ))
+        
+        self.add_controller(shortcut_controller)
+
         self.webview.get_settings().set_enable_developer_extras(enabled=True)
         self.webview.connect('decide-policy', self.decide_policy)
         self.webview.load_uri(uri)
@@ -209,8 +223,8 @@ class CockpitClient(Gtk.Application):
         ])
 
         self.set_accels_for_action("app.new-window", ["<Ctrl>N"])
-        self.set_accels_for_action("win.reload", ["<Primary>r"])
-        self.set_accels_for_action("win.reload-bypass-cache", ["<Primary><Shift>r"])
+        # self.set_accels_for_action("win.reload", ["<Primary>r"])
+        # self.set_accels_for_action("win.reload-bypass-cache", ["<Primary><Shift>r"])
         self.set_accels_for_action("win.go-back", ["<Alt>Left"])
         self.set_accels_for_action("win.go-forward", ["<Alt>Right"])
         self.set_accels_for_action("win.zoom::in", ["<Primary>equal"])
